@@ -44,10 +44,6 @@ ggplot(traindata, aes(y = absences, x = guardian)) +
   theme_minimal() +
   geom_col()
 ```
-```{r}
-#| label: ggpairs plot
-GGally::ggpairs(traindata)
-```
 
 ```{r}
 #| label: Principal component analysis
@@ -76,6 +72,15 @@ cumvar <- varexpl %>%
 colnames(cumvar) <- c("Cumulative Variance", "Component")
 
 cumvar
+```
+We choose the first 6 principal components, because their eigenvalues are larger than 1.
+
+```{r}
+
+PCA_traindata <- traindata %>% 
+  select(negate(is.numeric))
+
+PCA_traindata <- cbind(PCA_traindata, PCAresults$x[,1:6])
 ```
 
 # Model description
