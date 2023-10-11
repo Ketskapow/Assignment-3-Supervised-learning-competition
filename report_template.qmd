@@ -13,6 +13,7 @@ This is a quarto file. If you open its [source](report_template.qmd) in RStudio,
 #| message: false
 
 library(tidyverse)
+library(corrr)
 # additional packages here
 ```
 
@@ -40,9 +41,27 @@ We also eventually want to predict the score of a student with several attribute
 ```{r}
 #| label: eda visualization
 
-ggplot(traindata, aes(y = absences, x = guardian)) +
+ggplot(traindata, aes(y = score, x = guardian)) +
   theme_minimal() +
-  geom_col()
+  geom_boxplot()
+```
+```{r}
+barplot(table(traindata$sex), ylab = 'Number of participants')
+barplot(table(traindata$guardian), ylab = 'Number of participants')
+barplot(table(traindata$activities), ylab = 'Number of participants')
+```
+
+```{r}
+x <- traindata %>% 
+  correlate() %>% 
+  focus(score)
+
+x %>% 
+  mutate(term = factor(term, levels = term[order(score)])) %>%  # Order by correlation strength
+  ggplot(aes(x = term, y = score)) +
+    geom_bar(stat = "identity") +
+    ylab("Correlation with score") +
+    xlab("Variable")
 ```
 
 ```{r}
