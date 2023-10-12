@@ -45,11 +45,20 @@ ggplot(traindata, aes(y = score, x = guardian)) +
   theme_minimal() +
   geom_boxplot()
 ```
+In the plot above, we can see that the score variability is much higher when mothers are guardians, than when fathers and other are guardians. However, when we look at the frequency of each factor level:
+```{r}
+barplot(table(traindata$guardian), ylab = 'Number of participants')
+```
+We can see that this might just be because there is a lot more data for the mother category.
+
+A small look at some other attributes:
+
 ```{r}
 barplot(table(traindata$sex), ylab = 'Number of participants')
-barplot(table(traindata$guardian), ylab = 'Number of participants')
 barplot(table(traindata$activities), ylab = 'Number of participants')
 ```
+Frequency of the levels in these two attribute seems to indicate an even distribution. Which is good when looking for classification.
+
 
 ```{r}
 x <- traindata %>% 
