@@ -106,7 +106,7 @@ We choose the first 6 principal components, because their eigenvalues are larger
 ```{r}
 
 PCA_traindata <- traindata %>% 
-  select(negate(is.numeric))
+  select(c(negate(is.numeric), score))
 
 PCA_traindata <- cbind(PCA_traindata, PCAresults$x[,1:6])
 ```
