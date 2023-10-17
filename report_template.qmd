@@ -82,6 +82,7 @@ num_traindata <- traindata %>%
 
 PCAresults <- prcomp(num_traindata, scale = TRUE)
 ```
+
 ```{r}
 #calculate total variance explained by each principal component
 eigenvalues <- PCAresults$sdev^2
@@ -141,6 +142,7 @@ data.frame(
 
 Write down what each team member contributed to the project.
 
-- Author One: a, b, c
-- Author Two: b, c, d
-- Author Three: a, b, d
+- Daniël: Data exploration, PCA, formatting the QMD file
+- Max: Boosting & Random Forest analysis
+- William: LASSO & Data exploration
+- Madio: KNN & Data normalization
