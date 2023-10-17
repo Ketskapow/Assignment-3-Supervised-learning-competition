@@ -73,26 +73,58 @@ x %>%
     xlab("Variable")
 ```
 
+# Model description
+
+We look at the following models when making predictions:
+
+## K-Nearest Neighbors (KNN)
+KNN is a simple algorithm used for classification/regression. It operates by finding the K data points in the training set that are closest to the input data point, and then calculates the average of those points in the case of regression.
+
+## Boosting
+Boosting combines multiple weak learners (decision trees) to create a strong predictive model. It works by giving more weight to the data points that the weak models struggle with, making them focus on the mistakes.
+
+## Random Forest
+Random forest is a machine learning algorithm that creates a "forest" of decision trees. Each decision trees is trained on a random subset of the data with a random subset of features. For predictions, it aggregates the results from all the trees.
+
+## LASSO regression
+LASSO is a regression technique that focuses on feature selection. It adds a penalty term to the regression, which encourages the model to shrink less important coefficients to zero. A LASSO regression results in a simpler, more interpretable model that often performs well.
+
+
+# Data transformation and pre-processing
+
+For preprocessing, we use PCA as a means of dimension reduction.
+
+First, we create a dataframe with only the numeric variables, since PCA only works on numeric data.
 ```{r}
 #| label: Principal component analysis
 
 # Create df with only numeric variables
 num_traindata <- traindata %>% 
-  select(where(is.numeric))
+  select(where(is.numeric), -score)
+  
+```
 
+Then, we fit the PCA and extract the results using prcomp().
+```{r}
 PCAresults <- prcomp(num_traindata, scale = TRUE)
 ```
 
+Now, we can calculate the eigenvalues of each principal component:
 ```{r}
 #calculate total variance explained by each principal component
 eigenvalues <- PCAresults$sdev^2
 varexpl <- eigenvalues / sum(eigenvalues)
-PCs <- 1:14
+PCs <- 1:13
 
+#plot components and their explained eigenvalues
 ggplot(data = NULL, aes(x = PCs, y = eigenvalues)) +
   geom_col() +
-  scale_x_continuous(breaks = seq(1, 14, by = 1))
+  scale_x_continuous(breaks = seq(1, 13, by = 1))
+```
+If we use the Kaiser criterion, we use only principal components with an eigenvalue greater than 1. The principal components that fit this criterion are PC1 to PC5.
 
+Let's see how much variance that explains:
+```{r}
 cumvar <- varexpl %>%
   cumsum() %>%
   as.data.frame() %>%
@@ -100,29 +132,57 @@ cumvar <- varexpl %>%
 
 colnames(cumvar) <- c("Cumulative Variance", "Component")
 
-cumvar
+print(cumvar)
 ```
-We choose the first 6 principal components, because their eigenvalues are larger than 1.
+We will explain ~59% of the variance in the numeric data with the first 5 components, which is not bad.
 
+Let's replace the numeric variables with these new principal components, except score, of course.
 ```{r}
-
 PCA_traindata <- traindata %>% 
   select(c(negate(is.numeric), score))
 
-PCA_traindata <- cbind(PCA_traindata, PCAresults$x[,1:6])
+PCA_traindata <- cbind(PCA_traindata, PCAresults$x[,1:5])
 ```
 
-# Model description
-
-Briefly describe which models you compare to perform prediction. (approx. two or three paragraphs)
-
-# Data transformation and pre-processing
-
-Describe additional pre-processing steps you have used, if any (e.g., dealing with categorical data, scaling). If you do not do any pre-processing, you can leave this section out.
+Let's also check for missing data:
+```{r}
+sum(is.na(PCA_traindata))
+```
+There is none, so nothing needs to be done.
 
 # Model comparison
 
-Describe how you compare the methods and why. (approx. two or three paragraphs)
+## KNN
+
+### Building the model
+
+### Hyperparameter tuning
+
+### Final validation MSE
+
+## Boosting
+
+### Building the model
+
+### Hyperparameter tuning
+
+### Final validation MSE
+
+## Random Forest
+
+### Building the model
+
+### Hyperparameter tuning
+
+### Final validation MSE
+
+## LASSO
+
+### Building the model
+
+### Hyperparameter tuning
+
+### Final validation MSE
 
 # Chosen model
 
