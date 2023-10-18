@@ -27,7 +27,6 @@ testdata <- read_rds("data/test.rds")
 traindata <- read_rds("data/train.rds")
 ```
 
-
 # Data description
 
 Before making any predictions, we want to look at the data and its structure
@@ -95,6 +94,8 @@ LASSO is a regression technique that focuses on feature selection. It adds a pen
 
 # Data transformation and pre-processing
 
+## PCA
+
 For preprocessing, we use PCA as a means of dimension reduction.
 
 First, we create a dataframe with only the numeric variables, since PCA only works on numeric data.
@@ -157,6 +158,26 @@ Let's also check for missing data:
 sum(is.na(PCA_traindata))
 ```
 There is none, so nothing needs to be done.
+
+## RFE
+
+Recursive feature elimination
+```{r}
+# Create a control function for feature selection
+ctrl <- rfeControl(functions = rfFuncs, method = "cv", number = 10)
+
+dataminscore <- traindata %>% 
+  select(-score)
+# Perform feature selection with RFE
+result <- rfe(dataminscore, traindata$score, sizes = c(1:10), rfeControl = ctrl)
+
+print(result)
+```
+
+```{r}
+RFEdata <- traindata %>% 
+  select(result$optVariables)
+```
 
 # Model comparison
 
