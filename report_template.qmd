@@ -14,6 +14,8 @@ This is a quarto file. If you open its [source](report_template.qmd) in RStudio,
 
 library(tidyverse)
 library(corrr)
+library(caret)
+library(randomForest)
 # additional packages here
 ```
 
@@ -24,6 +26,7 @@ library(corrr)
 testdata <- read_rds("data/test.rds")
 traindata <- read_rds("data/train.rds")
 ```
+
 
 # Data description
 
