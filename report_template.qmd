@@ -144,6 +144,11 @@ PCA_traindata <- traindata %>%
 PCA_traindata <- cbind(PCA_traindata, PCAresults$x[,1:5])
 ```
 
+```{r}
+#write.csv(PCA_traindata, "PCAdata")
+```
+
+
 Let's also check for missing data:
 ```{r}
 sum(is.na(PCA_traindata))
